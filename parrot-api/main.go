@@ -2,19 +2,22 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/anthonynsimon/parrot/parrot-api/api"
-	"github.com/anthonynsimon/parrot/parrot-api/auth"
-	"github.com/anthonynsimon/parrot/parrot-api/config"
-	"github.com/anthonynsimon/parrot/parrot-api/datastore"
-	"github.com/anthonynsimon/parrot/parrot-api/logger"
+	"github.com/parrot-translate/parrot/parrot-api/api"
+	"github.com/parrot-translate/parrot/parrot-api/auth"
+	"github.com/parrot-translate/parrot/parrot-api/config"
+	"github.com/parrot-translate/parrot/parrot-api/datastore"
+	"github.com/parrot-translate/parrot/parrot-api/logger"
 	"github.com/pressly/chi"
 	"github.com/pressly/chi/middleware"
 )
+
+const ConfigFileLocation = "./parrot_api.yaml"
 
 func init() {
 	// Config log
@@ -25,15 +28,7 @@ func init() {
 
 // TODO: refactor this into cli to start server
 func main() {
-	conf, err := config.FromEnv()
-	if err != nil {
-		logrus.Fatal(err)
-	}
-
-	// init and ping datastore
-	if conf.DBName == "" || conf.DBConn == "" {
-		logrus.Fatal("Database not properly configured.")
-	}
+	conf := mustLoadConf()
 
 	ds, err := datastore.NewDatastore(conf.DBName, conf.DBConn)
 	if err != nil {
@@ -41,14 +36,9 @@ func main() {
 	}
 	defer ds.Close()
 
-	// Ping DB until service is up, block meanwhile
-	blockAndRetry(5*time.Second, func() bool {
-		if err = ds.Ping(); err != nil {
-			logrus.Error(fmt.Sprintf("failed to ping datastore.\nerr: %s", err))
-			return false
-		}
-		return true
-	})
+	if err = ds.Ping(); err != nil {
+		logrus.Fatal(fmt.Sprintf("failed to ping datastore.\nerr: %s", err))
+	}
 
 	router := chi.NewRouter()
 	router.Use(
@@ -79,9 +69,32 @@ func main() {
 	logrus.Fatal(s.ListenAndServe())
 }
 
-func blockAndRetry(d time.Duration, fn func() bool) {
-	for !fn() {
-		logrus.Infof("retrying in %s...\n", d.String())
-		time.Sleep(d)
+func mustLoadConf() *config.AppConfig {
+	var conf *config.AppConfig
+
+	// Check if config file exists
+	_, err := os.Stat(ConfigFileLocation)
+	// If not exists, load from environment
+	if os.IsNotExist(err) {
+		conf, err = config.FromEnv()
+		if err != nil {
+			logrus.Fatal(err)
+		}
+	} else {
+		// If exists, load from file
+		data, err := ioutil.ReadFile(ConfigFileLocation)
+		if err != nil {
+			logrus.Fatal(err)
+		}
+
+		conf, err = config.FromYaml(data)
+		if err != nil {
+			logrus.Fatal(err)
+		}
 	}
+
+	// Set defaults if no value set
+	config.SetOrDefault(conf)
+
+	return conf
 }
