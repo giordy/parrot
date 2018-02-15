@@ -23,15 +23,15 @@ def upgrade():
         CREATE TABLE projects (
             PRIMARY KEY (id),
             id UUID DEFAULT uuid_generate_v4(),
-            project_name VARCHAR(1024) NOT NULL
+            name VARCHAR(1024) NOT NULL
         );
 
-        CREATE TABLE project_strings (
+        CREATE TABLE project_keys (
             PRIMARY KEY (id),
             id UUID DEFAULT uuid_generate_v4(),
-            string VARCHAR(2048) NOT NULL,
+            key VARCHAR(2048) NOT NULL,
             project_id UUID NOT NULL REFERENCES projects (id) ON DELETE CASCADE,
-            UNIQUE (project_id, string)
+            UNIQUE (project_id, key)
         );
 
         CREATE TABLE locales (
@@ -47,14 +47,14 @@ def upgrade():
             translation TEXT,
             locale_code VARCHAR(5) NOT NULL REFERENCES locales (code),
             project_id UUID NOT NULL REFERENCES projects (id) ON DELETE CASCADE,
-            string_id UUID NOT NULL REFERENCES project_strings (id) ON DELETE CASCADE,
-            UNIQUE (project_id, string_id, locale_code)
+            key_id UUID NOT NULL REFERENCES project_keys (id) ON DELETE CASCADE,
+            UNIQUE (project_id, key_id, locale_code)
         );
 
         CREATE TABLE users (
             PRIMARY KEY (id),
             id UUID DEFAULT uuid_generate_v4(),
-            user_name VARCHAR(2048) NOT NULL,
+            name VARCHAR(2048) NOT NULL,
             email VARCHAR(2048) NOT NULL,
             hashed_password VARCHAR(4096) NOT NULL,
             UNIQUE (email)
@@ -89,7 +89,7 @@ def upgrade():
 def downgrade():
     op.execute("""
         DROP TABLE projects;
-        DROP TABLE project_strings;
+        DROP TABLE project_keys;
         DROP TABLE locales;
         DROP TABLE project_translations;
         DROP TABLE users;
