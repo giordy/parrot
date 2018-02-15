@@ -36,8 +36,8 @@ def upgrade():
 
         CREATE TABLE locales (
             PRIMARY KEY (code),
-            code VARCHAR(5) NOT NULL,
-            lang VARCHAR(512) NOT NULL,
+            code VARCHAR(16) NOT NULL,
+            language VARCHAR(512) NOT NULL,
             country VARCHAR(512) NOT NULL
         );
 
@@ -79,8 +79,8 @@ def upgrade():
         CREATE TABLE project_clients (
             PRIMARY KEY (id),
             id UUID DEFAULT uuid_generate_v4(),
-            client_name VARCHAR(2048) NOT NULL,
-            client_secret VARCHAR(4096) NOT NULL,
+            name VARCHAR(2048) NOT NULL,
+            secret VARCHAR(4096) NOT NULL,
             project_id UUID REFERENCES projects (id) ON DELETE CASCADE
         );
     """)
@@ -88,12 +88,12 @@ def upgrade():
 
 def downgrade():
     op.execute("""
-        DROP TABLE projects;
-        DROP TABLE project_keys;
-        DROP TABLE locales;
-        DROP TABLE project_translations;
-        DROP TABLE users;
-        DROP TABLE roles;
         DROP TABLE project_users;
         DROP TABLE project_clients;
+        DROP TABLE project_translations;
+        DROP TABLE project_keys;
+        DROP TABLE projects;
+        DROP TABLE locales;
+        DROP TABLE users;
+        DROP TABLE roles;
     """)
