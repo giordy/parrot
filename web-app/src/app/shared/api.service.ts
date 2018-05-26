@@ -1,9 +1,12 @@
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
+
+import {map, catchError} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Http, Headers, ResponseContentType } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
+
 
 import { environment } from './../../environments/environment';
 import { TokenService } from './../auth/services/token.service';
@@ -47,15 +50,15 @@ export class APIService {
                 method: options.method || 'GET',
                 headers: options.headers || this.getHeaders(options.withAuthorization),
                 body: options.body,
-            })
-            .map(res => res.json())
-            .catch(err => {
+            }).pipe(
+            map(res => res.json()),
+            catchError(err => {
                 if (err.status <= 0) {
                     console.error(err);
-                    return Observable.throw('internal error');
+                    return observableThrowError('internal error');
                 }
-                return Observable.throw(err.json().meta.error);
-            });
+                return observableThrowError(err.json().meta.error);
+            }),);
     }
 
     requestDownload(options: RequestOptions): Observable<any> {
@@ -65,9 +68,9 @@ export class APIService {
                 headers: options.headers || this.getHeaders(options.withAuthorization),
                 body: options.body,
                 responseType: ResponseContentType.Blob,
-            })
-            .map(res => res.blob())
-            .catch(err => { console.error(err); return Observable.throw(err); });
+            }).pipe(
+            map(res => res.blob()),
+            catchError(err => { console.error(err); return observableThrowError(err); }),);
     }
 
     mapErrors(error: any): string[] {

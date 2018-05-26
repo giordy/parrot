@@ -1,6 +1,8 @@
+
+import {map} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import 'rxjs/add/operator/map';
+
 
 import { UserService } from './../../users/services/user.service';
 import { LocalesService } from './../../locales/services/locales.service';
@@ -25,8 +27,8 @@ export class ProjectLocalesPage implements OnInit {
     }
 
     ngOnInit() {
-        this.route.params
-            .map(params => params['projectId'])
+        this.route.params.pipe(
+            map(params => params['projectId']))
             .subscribe(projectId => {
                 this.fetchLocales(projectId);
                 this.userService.isAuthorized(projectId, 'CanCreateLocales')

@@ -1,8 +1,9 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { tokenNotExpired } from 'angular2-jwt';
-import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs';
+
 
 import { TokenService } from './token.service';
 import { APIService } from './../../shared/api.service';
@@ -20,7 +21,8 @@ export class AuthService {
 
     isLoggedIn(): boolean {
         let token = this.token.getToken();
-        return tokenNotExpired(null, token);
+        // TODO!
+        return false;
     }
 
     login(user: User): Observable<boolean> {
@@ -33,8 +35,8 @@ export class AuthService {
             headers: headers,
             body: `grant_type=password&username=${user.email}&password=${user.password}`,
             withAuthorization: false,
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let payload = res.payload;
                 if (!payload) {
                     throw new Error("no payload in response");
@@ -45,7 +47,7 @@ export class AuthService {
                 }
                 this.token.storeToken(token);
                 return true;
-            });
+            }));
     }
 
     register(user: User): Observable<boolean> {
@@ -54,8 +56,8 @@ export class AuthService {
             method: 'POST',
             body: JSON.stringify({ name: user.name, email: user.email, password: user.password }),
             withAuthorization: false,
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let meta = res.meta;
                 if (!meta) {
                     throw new Error("no meta in response");
@@ -64,6 +66,6 @@ export class AuthService {
                     return false;
                 }
                 return true;
-            });
+            }));
     }
 }

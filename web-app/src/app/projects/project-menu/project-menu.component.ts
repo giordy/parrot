@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -27,8 +29,8 @@ export class ProjectMenuComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.route.params
-            .map(params => params['projectId'])
+        this.route.params.pipe(
+            map(params => params['projectId']))
             .subscribe(projectId => {
                 this.userService.isAuthorized(projectId, 'CanViewProjectRoles')
                     .subscribe(ok => this.adminSectionVisible = ok);

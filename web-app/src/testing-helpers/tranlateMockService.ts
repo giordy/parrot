@@ -1,16 +1,17 @@
-import { Observable } from 'rxjs/Observable';
+
+import {of as observableOf,  Observable } from 'rxjs';
 
 export class TranslateServiceStub {
 
 	setDefaultLang(key: any): any {
-		return Observable.of(key);
+		return observableOf(key);
 	}
 
 	getBrowserCultureLang(key: any): any {
-		return Observable.of(key);
+		return observableOf(key);
 	}
 
 	use(key: any): any {
-		return Observable.of(key);
+		return observableOf(key);
 	}
 }

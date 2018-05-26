@@ -1,8 +1,9 @@
+
+import {map, share} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
+import { BehaviorSubject ,  Observable } from 'rxjs';
+
+
 
 import { APIService } from './../../shared/api.service';
 import { ProjectUser } from './../model';
@@ -24,14 +25,14 @@ export class ProjectUsersService {
         let request = this.api.request({
             uri: `/projects/${projectId}/users`,
             method: 'GET',
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let users = res.payload;
                 if (!users) {
                     throw new Error("no users in response");
                 }
                 return users;
-            }).share();
+            }),share(),);
 
         request.subscribe(
             users => { this._projectUsers.next(users); }
@@ -45,14 +46,14 @@ export class ProjectUsersService {
             uri: `/projects/${projectUser.project_id}/users`,
             method: 'POST',
             body: JSON.stringify(projectUser)
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let result = res.payload;
                 if (!result) {
                     throw new Error("no result in response");
                 }
                 return result;
-            }).share();
+            }),share(),);
 
         request.subscribe(
             user => {
@@ -70,14 +71,14 @@ export class ProjectUsersService {
             uri: `/projects/${projectUser.project_id}/users/${projectUser.user_id}/role`,
             method: 'PATCH',
             body: JSON.stringify(projectUser)
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let result = res.payload;
                 if (!result) {
                     throw new Error("no result in response");
                 }
                 return result;
-            }).share();
+            }),share(),);
 
         request.subscribe(
             updatedUser => {
@@ -94,7 +95,7 @@ export class ProjectUsersService {
         let request = this.api.request({
             uri: `/projects/${projectUser.project_id}/users/${projectUser.user_id}`,
             method: 'DELETE'
-        }).share();
+        }).pipe(share());
 
         request.subscribe(
             () => {

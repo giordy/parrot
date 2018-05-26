@@ -1,7 +1,9 @@
+
+import {map} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/do';
+
+
 
 import { ProjectUsersService } from './../../users/services/project-users.service';
 import { ProjectUser } from './../../users/model';
@@ -28,8 +30,8 @@ export class ProjectTeamPage implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.route.parent.params
-            .map(params => params['projectId'])
+        this.route.parent.params.pipe(
+            map(params => params['projectId']))
             .subscribe(projectId => {
                 this.projectId = projectId;
                 this.fetchUsers(projectId);

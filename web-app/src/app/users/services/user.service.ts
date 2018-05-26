@@ -1,14 +1,14 @@
+
+import {share, take, map, filter} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable ,  Subject ,  BehaviorSubject } from 'rxjs';
 
-import 'rxjs/add/operator/withLatestFrom';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/share';
+
+
+
+
+
 
 import { APIService } from './../../shared/api.service';
 import { ProjectsService } from './../../projects/services/projects.service';
@@ -29,11 +29,11 @@ export class UserService {
     }
 
     isAuthorized(projectId: string, grant: string): Observable<boolean> {
-        return this.getUserSelf()
-            .filter(user => {
+        return this.getUserSelf().pipe(
+            filter(user => {
                 return !!user;
-            })
-            .map(user => {
+            }),
+            map(user => {
                 let projectGrants: Map<string, string[]> = user.projectGrants;
                 if (!projectGrants) {
                     return false;
@@ -46,8 +46,8 @@ export class UserService {
                 let allowed: boolean = !!grants.find(current => current === grant);
 
                 return allowed;
-            })
-            .take(1);
+            }),
+            take(1),);
     }
 
     // TODO cache API call
@@ -55,8 +55,8 @@ export class UserService {
         let request = this.api.request({
             uri: `/users/self?include=projectGrants`,
             method: 'GET',
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let user = res.payload;
                 if (!user) {
                     throw new Error("no user in response");
@@ -65,7 +65,7 @@ export class UserService {
                 this._userSelf.next(user);
 
                 return user;
-            }).share();
+            }),share(),);
 
         return request;
     }
@@ -75,8 +75,8 @@ export class UserService {
             uri: `/users/self/password`,
             method: 'PATCH',
             body: JSON.stringify(payload),
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let user = res.payload;
                 if (!user) {
                     throw new Error("no user in response");
@@ -85,7 +85,7 @@ export class UserService {
                 this._userSelf.next(user);
 
                 return user;
-            }).share();
+            }),share(),);
 
         return request;
     }
@@ -95,8 +95,8 @@ export class UserService {
             uri: `/users/self/name`,
             method: 'PATCH',
             body: JSON.stringify(payload),
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let user = res.payload;
                 if (!user) {
                     throw new Error("no user in response");
@@ -105,7 +105,7 @@ export class UserService {
                 this._userSelf.next(user);
 
                 return user;
-            }).share();
+            }),share(),);
 
         return request;
     }
@@ -115,8 +115,8 @@ export class UserService {
             uri: `/users/self/email`,
             method: 'PATCH',
             body: JSON.stringify(payload),
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let user = res.payload;
                 if (!user) {
                     throw new Error("no user in response");
@@ -125,7 +125,7 @@ export class UserService {
                 this._userSelf.next(user);
 
                 return user;
-            }).share();
+            }),share(),);
 
         return request;
     }

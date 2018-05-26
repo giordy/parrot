@@ -1,9 +1,10 @@
+
+import {share, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import * as FileSaver from 'file-saver';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
+import { BehaviorSubject ,  Observable } from 'rxjs';
+
+
 
 import { APIService } from './../../shared/api.service';
 import { Pair, Locale, LocaleInfo, ExportFormat } from './../model';
@@ -32,10 +33,10 @@ export class LocalesService {
         return this.api.requestDownload({
             uri: `/projects/${projectId}/locales/${localeIdent}/export/${format.apiIdent}`,
             method: 'GET',
-        })
-            .map(blob => {
+        }).pipe(
+            map(blob => {
                 FileSaver.saveAs(blob, `${localeIdent}${format.extension}`)
-            });
+            }));
     }
 
     createLocale(projectId: string, locale: Locale): Observable<Locale> {
@@ -43,15 +44,15 @@ export class LocalesService {
             uri: `/projects/${projectId}/locales`,
             method: 'POST',
             body: JSON.stringify(locale),
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let locale = res.payload;
                 if (!locale) {
                     throw new Error("no locale in response");
                 }
                 return locale;
             }
-            ).share();
+            ),share(),);
 
         request.subscribe(locale => {
             this._locales.next(this._locales.getValue().concat(locale));
@@ -65,14 +66,14 @@ export class LocalesService {
             uri: `/projects/${projectId}/locales/${localeIdent}/pairs`,
             method: 'PATCH',
             body: JSON.stringify({'pairs': pairs}),
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let payload = res.payload;
                 if (!payload) {
                     throw new Error("no payload in response");
                 }
                 return payload;
-            }).share();
+            }),share(),);
 
         request.subscribe(result => {
             let next = this._locales.getValue().map(loc => {
@@ -89,14 +90,14 @@ export class LocalesService {
         let request = this.api.request({
             uri: `/projects/${projectId}/locales/`,
             method: 'GET',
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let locales = res.payload;
                 if (!locales) {
                     throw new Error("no locales in response");
                 }
                 return locales;
-            }).share();
+            }),share(),);
 
         request.subscribe(locales => {
             this._locales.next(locales);
@@ -109,14 +110,14 @@ export class LocalesService {
         let request = this.api.request({
             uri: `/projects/${projectId}/locales/${localeIdent}`,
             method: 'GET',
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let locale = res.payload;
                 if (!locale) {
                     throw new Error("no locale in response");
                 }
                 return locale;
-            }).share();
+            }),share(),);
 
         request.subscribe(result => {
             let current = this._locales.getValue();
@@ -141,8 +142,8 @@ export class LocalesService {
         let request = this.api.request({
             uri: `/projects/${projectId}/locales/${localeIdent}`,
             method: 'DELETE'
-        })
-            .share();
+        }).pipe(
+            share());
 
         request.subscribe(
             () => {

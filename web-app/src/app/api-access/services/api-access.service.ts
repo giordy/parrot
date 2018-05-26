@@ -1,8 +1,9 @@
+
+import {map, share} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
+import { BehaviorSubject ,  Observable } from 'rxjs';
+
+
 
 import { APIService } from './../../shared/api.service';
 import { ProjectClient } from './../model/app';
@@ -20,14 +21,14 @@ export class APIAccessService {
             uri: `/projects/${projectId}/clients`,
             method: 'POST',
             body: JSON.stringify({ name: clientName })
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let app = res.payload;
                 if (!app) {
                     throw new Error("no app in response");
                 }
                 return app;
-            }).share();
+            }),share(),);
 
         request.subscribe(
             client => {
@@ -45,14 +46,14 @@ export class APIAccessService {
             uri: `/projects/${projectId}/clients/${client.client_id}/name`,
             method: 'PATCH',
             body: JSON.stringify({ name: client.name })
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let app = res.payload;
                 if (!app) {
                     throw new Error("no app in response");
                 }
                 return app;
-            }).share();
+            }),share(),);
 
         request.subscribe(
             result => {
@@ -69,14 +70,14 @@ export class APIAccessService {
         let request = this.api.request({
             uri: `/projects/${projectId}/clients/${clientId}/resetSecret`,
             method: 'PATCH'
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let client = res.payload;
                 if (!client) {
                     throw new Error("no app in response");
                 }
                 return client;
-            }).share();
+            }),share(),);
 
         request.subscribe(
             result => {
@@ -93,14 +94,14 @@ export class APIAccessService {
         let request = this.api.request({
             uri: `/projects/${projectId}/clients`,
             method: 'GET',
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let clients = res.payload;
                 if (!clients) {
                     throw new Error("no clients in response");
                 }
                 return clients;
-            }).share();
+            }),share(),);
 
         request.subscribe(
             clients => {
@@ -116,14 +117,14 @@ export class APIAccessService {
         let request = this.api.request({
             uri: `/projects/${projectId}/clients/${clientId}`,
             method: 'GET',
-        })
-            .map(res => {
+        }).pipe(
+            map(res => {
                 let app = res.payload;
                 if (!app) {
                     throw new Error("no app in response");
                 }
                 return app;
-            }).share();
+            }),share(),);
 
         return request;
     }
@@ -132,7 +133,7 @@ export class APIAccessService {
         let request = this.api.request({
             uri: `/projects/${projectId}/clients/${clientId}`,
             method: 'DELETE',
-        }).share();
+        }).pipe(share());
 
         return request;
     }

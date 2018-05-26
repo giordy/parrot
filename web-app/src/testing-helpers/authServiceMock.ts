@@ -1,6 +1,7 @@
+
+import {throwError as observableThrowError, of as observableOf,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+
 
 
 
@@ -16,17 +17,17 @@ export class AuthSericeMock {
     }
     login( user: any ){
         if ( user.email === this.userModel.email ) {
-            return Observable.of( this.result );
+            return observableOf( this.result );
         }else{
-            return Observable.throw( new Error('no payload in response') );
+            return observableThrowError( new Error('no payload in response') );
         }
     }
 
     register(user: any): Observable<boolean> {
         if ( user.email === this.userModel.email ) {
-            return Observable.of( true );
+            return observableOf( true );
         }else{
-            return Observable.throw( new Error('no meta in response') );
+            return observableThrowError( new Error('no meta in response') );
         }
     }
 }

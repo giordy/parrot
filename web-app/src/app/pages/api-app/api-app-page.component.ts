@@ -1,7 +1,9 @@
+
+import {switchMapTo, tap, map} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import 'rxjs/add/operator/switchMapTo';
-import 'rxjs/add/operator/do';
+
+
 
 import { ProjectClient } from './../../api-access/model/app';
 import { APIAccessService } from './../../api-access/services/api-access.service';
@@ -30,12 +32,12 @@ export class APIAppPage implements OnInit {
     }
 
     ngOnInit() {
-        this.route.parent.params
-            .map(params => params['projectId'])
-            .do(projectId => this.projectId = projectId)
-            .switchMapTo(this.route.params)
-            .map(params => params['clientId'])
-            .do(clientId => this.clientId = clientId)
+        this.route.parent.params.pipe(
+            map(params => params['projectId']),
+            tap(projectId => this.projectId = projectId),
+            switchMapTo(this.route.params),
+            map(params => params['clientId']),
+            tap(clientId => this.clientId = clientId),)
             .subscribe(() => {
                 this.fetchApp();
             });

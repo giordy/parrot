@@ -1,7 +1,8 @@
+
+import {of as observableOf,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { Project } from './../app/projects/model/project'
-import 'rxjs/add/observable/of';
+
 
 @Injectable()
 export class ProjectServiceMock{
@@ -12,7 +13,7 @@ export class ProjectServiceMock{
     }
     createProject( project ){
         project = this.projectMock;
-        return Observable.of(project);
+        return observableOf(project);
     }
 
     fail(){

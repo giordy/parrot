@@ -1,8 +1,9 @@
+
+import {map, share} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
+import { BehaviorSubject ,  Observable } from 'rxjs';
+
+
 
 import { UserService } from './../../users/services/user.service';
 import { APIService } from './../../shared/api.service';
@@ -23,14 +24,14 @@ export class ProjectsService {
     let request = this.api.request({
       uri: '/projects',
       method: 'GET',
-    })
-      .map(res => {
+    }).pipe(
+      map(res => {
         let projects = res.payload;
         if (!projects) {
           throw new Error("no projects in response");
         }
         return projects;
-      }).share();
+      }),share(),);
 
     request.subscribe(
       projects => { this._projects.next(projects); }
@@ -43,14 +44,14 @@ export class ProjectsService {
     let request = this.api.request({
       uri: `/projects/${id}`,
       method: 'GET',
-    })
-      .map(res => {
+    }).pipe(
+      map(res => {
         let project = res.payload;
         if (!project) {
           throw new Error("no project in response");
         }
         return project;
-      }).share();
+      }),share(),);
 
     request.subscribe(project => this._activeProject.next(project));
 
@@ -62,14 +63,14 @@ export class ProjectsService {
       uri: '/projects',
       method: 'POST',
       body: JSON.stringify(project),
-    })
-      .map(res => {
+    }).pipe(
+      map(res => {
         let project = res.payload;
         if (!project) {
           throw new Error("no project in response");
         }
         return project;
-      }).share();
+      }),share(),);
 
     request.subscribe(
       project => {
@@ -85,14 +86,14 @@ export class ProjectsService {
       uri: `/projects/${projectId}/keys`,
       method: 'POST',
       body: JSON.stringify({ key: key }),
-    })
-      .map(res => {
+    }).pipe(
+      map(res => {
         let payload = res.payload;
         if (!payload) {
           throw new Error("no payload in response");
         }
         return payload;
-      }).share();
+      }),share(),);
 
     request.subscribe(
       project => {
@@ -108,8 +109,8 @@ export class ProjectsService {
     let request = this.api.request({
       uri: `/projects/${projectId}`,
       method: 'DELETE'
-    })
-      .share();
+    }).pipe(
+      share());
 
     request.subscribe(
       () => {
@@ -125,14 +126,14 @@ export class ProjectsService {
     let request = this.api.request({
       uri: `/projects/${projectId}/keys/${key}`,
       method: 'DELETE'
-    })
-      .map(res => {
+    }).pipe(
+      map(res => {
         let payload = res.payload;
         if (!payload) {
           throw new Error("no payload in response");
         }
         return payload;
-      }).share();
+      }),share(),);
 
     request.subscribe(
       project => {
@@ -149,14 +150,14 @@ export class ProjectsService {
       uri: `/projects/${projectId}/keys`,
       method: 'PATCH',
       body: JSON.stringify({ oldKey: oldKey, newKey: newKey }),
-    })
-      .map(res => {
+    }).pipe(
+      map(res => {
         let payload = res.payload.project;
         if (!payload) {
           throw new Error("no payload in response");
         }
         return payload;
-      }).share();
+      }),share(),);
 
     request.subscribe(
       project => {
@@ -173,14 +174,14 @@ export class ProjectsService {
       uri: `/projects/${projectId}/name`,
       method: 'PATCH',
       body: JSON.stringify({ projectId: projectId, name: newName }),
-    })
-      .map(res => {
+    }).pipe(
+      map(res => {
         let payload = res.payload;
         if (!payload) {
           throw new Error("no payload in response");
         }
         return payload;
-      }).share();
+      }),share(),);
 
     request.subscribe(
       project => {

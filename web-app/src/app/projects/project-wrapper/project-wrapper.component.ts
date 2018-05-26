@@ -1,5 +1,7 @@
+
+import {map} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
-import 'rxjs/add/operator/map';
+
 
 import { UserService } from './../../users/services/user.service';
 import { ProjectsService } from './../services/projects.service';
@@ -20,8 +22,8 @@ export class ProjectWrapperComponent implements OnInit {
     constructor(private projectsService: ProjectsService, private route: ActivatedRoute) { }
 
     ngOnInit() {
-        this.route.params
-            .map(params => params['projectId'])
+        this.route.params.pipe(
+            map(params => params['projectId']))
             .subscribe(projectId => this.fetchProject(projectId));
 
         this.projectsService.activeProject

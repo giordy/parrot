@@ -1,6 +1,8 @@
+
+import {switchMapTo, map} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import 'rxjs/add/operator/switchMapTo';
+
 
 import { UserService } from './../../users/services/user.service';
 import { LocalesService } from './../../locales/services/locales.service';
@@ -38,11 +40,11 @@ export class LocalePage implements OnInit {
     }
 
     ngOnInit() {
-        this.route.parent.params
-            .map(params => params['projectId'])
-            .map(projectId => { this.projectId = projectId; })
-            .switchMapTo(this.route.params)
-            .map(params => params['localeIdent'])
+        this.route.parent.params.pipe(
+            map(params => params['projectId']),
+            map(projectId => { this.projectId = projectId; }),
+            switchMapTo(this.route.params),
+            map(params => params['localeIdent']),)
             .subscribe(localeIdent => {
                 this.fetchLocale(this.projectId, localeIdent);
                 this.userService.isAuthorized(this.projectId, 'CanUpdateLocales')

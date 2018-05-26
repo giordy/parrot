@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -25,8 +27,8 @@ export class ProjectSettingsPage implements OnInit {
         this.projectsService.activeProject
             .subscribe(project => this.project = project);
 
-        this.route.parent.params
-            .map(params => params['projectId'])
+        this.route.parent.params.pipe(
+            map(params => params['projectId']))
             .subscribe(projectId => {
                 this.fetchProject(projectId);
                 this.userService.isAuthorized(projectId, 'CanDeleteProject')
