@@ -23,7 +23,7 @@ import {
 } from './pages';
 
 import {ProjectWrapperComponent} from './projects';
-import {LoginComponent, RegisterComponent} from './auth';
+import {LoginComponent, RegisterComponent} from './auth/auth.module';
 
 const appRoutes: Routes = [
   {path: 'register', component: RegisterComponent, canActivate: [UnauthGuard]},

@@ -13,10 +13,13 @@ import {Locale} from '../../locales/model';
   styleUrls: ['locale-page.component.css']
 })
 export class LocalePageComponent implements OnInit {
+
   private set locale(value: Locale) {
     this._locale = value;
     this.percentTranslated = this.calcPercentTranslated(value);
   }
+
+  private referenceLocale?: Locale;
 
   private get locale(): Locale {
     return this._locale;
@@ -63,10 +66,13 @@ export class LocalePageComponent implements OnInit {
 
     this.localesService.activeLocale
       .subscribe(locale => this.locale = locale);
+    this.localesService.referenceLocale
+      .subscribe(locale => this.referenceLocale = locale);
   }
 
   fetchLocale(projectId, localeIdent) {
     this.loading = true;
+    this.localesService.fetchReferenceLocale(projectId);
     this.localesService.fetchLocale(projectId, localeIdent)
       .subscribe(
         locale => {

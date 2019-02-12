@@ -11,7 +11,7 @@ import {CoreModule} from './core/core.module';
 import {AppComponent} from './app.component';
 import {APIService} from './shared/api.service';
 import {ErrorsService} from './shared/errors.service';
-import {AuthGuard, AuthModule, AuthService, UnauthGuard} from './auth';
+import {AuthGuard, AuthModule, AuthService, UnauthGuard} from './auth/auth.module';
 import {AuthorizedGuard} from './users/guards/authorized.guard';
 import {UserService} from './users';
 import {PagesModule} from './pages';

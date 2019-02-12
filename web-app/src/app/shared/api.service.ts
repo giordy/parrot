@@ -6,7 +6,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 import {environment} from '../../environments/environment';
-import {TokenService} from '../auth';
+import {TokenService} from '../auth/services/token.service';
 
 export interface RequestOptions {
   uri: string;

@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgForm, FormsModule } from '@angular/forms';
 
-import { AuthService } from './../app/auth/';
-import { ErrorsService } from './../app/shared/errors.service';
-import { ProjectsService } from './../app/projects';
+import { AuthService } from '../app/auth/services/auth.service';
+import { ErrorsService } from '../app/shared/errors.service';
+import { ProjectsService } from '../app/projects';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthSericeMock, ErrorServiceMock, ProjectServiceMock,
     TranslateServiceStub, TranslatePipeMock } from './index';

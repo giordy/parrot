@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 @Injectable()
 export class TokenService {
 
-  private tokenName: string = 'auth.token';
+  private tokenName = 'auth.token';
 
   getToken(): string {
     return localStorage.getItem(this.tokenName);

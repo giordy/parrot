@@ -1,1 +1,12 @@
+.en_translation {
+  padding-top: 8px;
+  margin-top: 8px;
+  border-top: 1px solid #EEEEEE;
+}
 
+.en_translation p {
+  margin-top: 4px;
+  padding: 4px 8px;
+  background-color: #eeeeee;
+  font-weight: bold;
+}

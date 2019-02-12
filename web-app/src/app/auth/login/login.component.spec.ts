@@ -3,7 +3,7 @@ import {By} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 
 import {TestModule} from './../../../testing-helpers';
-import {AuthService, LoginComponent} from './../index';
+import {AuthService, LoginComponent} from '../auth.module';
 import {ErrorsService} from './../../shared/errors.service';
 
 describe('Login Component', () => {

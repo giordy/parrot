@@ -7,9 +7,16 @@
   </thead>
   <tbody>
   <tr *ngFor="let pair of pairs">
-    <td>{{pair.key}}</td>
+    <td style="max-width: 180px">
+      <span>{{pair.key}}</span>
+      <div [hidden]="!editable || _locale.ident == 'en_US'" class="en_translation">
+        <i class="flag-icon flag-icon-us"></i> (Reference)
+        <p class="reference">{{ reference[pair.key] || '[ N.A. ]' }}</p>
+      </div>
+    </td>
     <td>
       <p [hidden]="editable">{{pair.value}}</p>
+
       <editable-textfield [pair]="pair" [loading]="updatePending" [hidden]="!editable"
                           [commit]="commitPair"></editable-textfield>
     </td>

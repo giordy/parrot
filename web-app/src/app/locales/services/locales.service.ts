@@ -12,7 +12,9 @@ import {LocaleExportFormats, LocalesList} from './../../app.constants';
 @Injectable()
 export class LocalesService {
 
+  private _referenceLocale = new BehaviorSubject<Locale>(null);
   private _activeLocale = new BehaviorSubject<Locale>(null);
+  public referenceLocale: Observable<Locale> = this._referenceLocale.asObservable();
   public activeLocale: Observable<Locale> = this._activeLocale.asObservable();
 
   private _locales = new BehaviorSubject<Locale[]>([]);
@@ -35,27 +37,27 @@ export class LocalesService {
       method: 'GET',
     })
       .map(blob => {
-        FileSaver.saveAs(blob, `${localeIdent}${format.extension}`)
+        FileSaver.saveAs(blob, `${localeIdent}${format.extension}`);
       });
   }
 
   createLocale(projectId: string, locale: Locale): Observable<Locale> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: `/projects/${projectId}/locales`,
       method: 'POST',
       body: JSON.stringify(locale),
     })
       .map(res => {
-          let locale = res.payload;
-          if (!locale) {
+          const loc = res.payload;
+          if (!loc) {
             throw new Error('no locale in response');
           }
-          return locale;
+          return loc;
         }
       ).share();
 
-    request.subscribe(locale => {
-      this._locales.next(this._locales.getValue().concat(locale));
+    request.subscribe(loc => {
+      this._locales.next(this._locales.getValue().concat(loc));
     }, () => {
     });
 
@@ -63,13 +65,13 @@ export class LocalesService {
   }
 
   updateLocalePairs(projectId: string, localeIdent: string, pairs: Pair[]): Observable<Locale> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: `/projects/${projectId}/locales/${localeIdent}/pairs`,
       method: 'PATCH',
       body: JSON.stringify({'pairs': pairs}),
     })
       .map(res => {
-        let payload = res.payload;
+        const payload = res.payload;
         if (!payload) {
           throw new Error('no payload in response');
         }
@@ -77,8 +79,8 @@ export class LocalesService {
       }).share();
 
     request.subscribe(result => {
-      let next = this._locales.getValue().map(loc => {
-        return loc.id === result.id ? result : loc
+      const next = this._locales.getValue().map(loc => {
+        return loc.id === result.id ? result : loc;
       });
       this._locales.next(next);
       this._activeLocale.next(result);
@@ -89,12 +91,12 @@ export class LocalesService {
   }
 
   fetchLocales(projectId: string): Observable<Locale[]> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: `/projects/${projectId}/locales/`,
       method: 'GET',
     })
       .map(res => {
-        let locales = res.payload;
+        const locales = res.payload;
         if (!locales) {
           throw new Error('no locales in response');
         }
@@ -110,12 +112,12 @@ export class LocalesService {
   }
 
   fetchLocale(projectId: string, localeIdent: string): Observable<Locale> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: `/projects/${projectId}/locales/${localeIdent}`,
       method: 'GET',
     })
       .map(res => {
-        let locale = res.payload;
+        const locale = res.payload;
         if (!locale) {
           throw new Error('no locale in response');
         }
@@ -123,14 +125,14 @@ export class LocalesService {
       }).share();
 
     request.subscribe(result => {
-      let current = this._locales.getValue();
+      const current = this._locales.getValue();
       let next = [];
 
       if (current.length <= 0) {
         next.concat(result);
       } else {
         next = current.map(loc => {
-          return loc.id === result.id ? result : loc
+          return loc.id === result.id ? result : loc;
         });
       }
 
@@ -142,8 +144,29 @@ export class LocalesService {
     return request;
   }
 
+  fetchReferenceLocale(projectId: string): Observable<Locale> {
+    const request = this.api.request({
+      uri: `/projects/${projectId}/locales/en_US`,
+      method: 'GET',
+    })
+      .map(res => {
+        const locale = res.payload;
+        if (!locale) {
+          throw new Error('no locale in response');
+        }
+        return locale;
+      }).share();
+
+    request.subscribe(result => {
+      this._referenceLocale.next(result);
+    }, () => {
+    });
+
+    return request;
+  }
+
   deleteLocale(projectId: string, localeIdent: string): Observable<any> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: `/projects/${projectId}/locales/${localeIdent}`,
       method: 'DELETE'
     })
@@ -151,7 +174,7 @@ export class LocalesService {
 
     request.subscribe(
       () => {
-        let locales = this._locales.getValue().filter(_locale => _locale.ident !== localeIdent);
+        const locales = this._locales.getValue().filter(_locale => _locale.ident !== localeIdent);
         this._locales.next(locales);
         this._activeLocale.next(null);
       });

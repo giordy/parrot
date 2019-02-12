@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {AuthService, TokenService} from './../../auth';
+import {AuthService, TokenService} from '../../auth/auth.module';
 import {ProjectMenuService} from './../services/project-menu.service';
 
 @Component({

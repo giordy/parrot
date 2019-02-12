@@ -3,7 +3,7 @@ import {By} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 
 import {TestModule} from './../../../testing-helpers';
-import {AuthService, RegisterComponent} from './../index';
+import {AuthService, RegisterComponent} from '../auth.module';
 import {ErrorsService} from './../../shared/errors.service';
 
 

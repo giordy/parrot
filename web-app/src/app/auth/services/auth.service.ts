@@ -5,13 +5,11 @@ import {tokenNotExpired} from 'angular2-jwt';
 import 'rxjs/add/operator/map';
 
 import {TokenService} from './token.service';
-import {APIService} from './../../shared/api.service';
-import {User} from './../../users/model/user';
+import {APIService} from '../../shared/api.service';
+import {User} from '../../users/model';
 
 @Injectable()
 export class AuthService {
-
-  private tokenName: string = 'auth.token';
 
   constructor(
     private api: APIService,
@@ -20,12 +18,12 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    let token = this.token.getToken();
+    const token = this.token.getToken();
     return tokenNotExpired(null, token);
   }
 
   login(user: User): Observable<boolean> {
-    let headers: Headers = new Headers();
+    const headers: Headers = new Headers();
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
     return this.api.request({
@@ -36,11 +34,11 @@ export class AuthService {
       withAuthorization: false,
     })
       .map(res => {
-        let payload = res.payload;
+        const payload = res.payload;
         if (!payload) {
           throw new Error('no payload in response');
         }
-        let token = payload['access_token'];
+        const token = payload['access_token'];
         if (!token) {
           throw new Error('no token in response');
         }
@@ -57,14 +55,12 @@ export class AuthService {
       withAuthorization: false,
     })
       .map(res => {
-        let meta = res.meta;
+        const meta = res.meta;
         if (!meta) {
           throw new Error('no meta in response');
         }
-        if (meta.status < 200 || meta.status > 300) {
-          return false;
-        }
-        return true;
+        return !(meta.status < 200 || meta.status > 300);
+
       });
   }
 }

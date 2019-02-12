@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  apiEndpoint: 'http://localhost:9990/api/v1',
+  apiEndpoint: 'https://localization.uniwhere.co/api/v1',
 };

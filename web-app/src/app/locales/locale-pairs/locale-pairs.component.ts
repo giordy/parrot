@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 
 import {Locale, Pair} from '../model';
-import {LocalesService} from '..';
+import {LocalesService} from '../services/locales.service';
 
 @Component({
   selector: 'locale-pairs',
@@ -20,14 +20,21 @@ export class LocalePairsComponent {
     return this._locale;
   }
 
+  @Input()
+  set refLocale(value: Locale) {
+    this.reference = this.buildReference(value);
+  }
+
   private _locale: Locale;
 
   @Input()
   loading = false;
+
   @Input()
   editable = false;
 
   public pairs: Pair[];
+  private reference: Map<string, string> = new Map();
   private updatePending = false;
 
   constructor(private localesService: LocalesService) {
@@ -66,4 +73,18 @@ export class LocalePairsComponent {
     }
     return result;
   }
+
+  buildReference(locale: Locale): Map<string, string> {
+    if (!locale) {
+      return new Map();
+    }
+    const pairs = locale.pairs;
+    const result = new Map<string, string>();
+    const keys = Object.keys(pairs);
+    for (let i = 0; i < keys.length; i++) {
+      result[keys[i]] = pairs[keys[i]];
+    }
+    return result;
+  }
+
 }
