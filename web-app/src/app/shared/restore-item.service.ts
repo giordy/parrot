@@ -1,38 +1,38 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable()
 // TODO: make this actually work as intended!
 export class RestoreItemService<T> {
-    original: T;
-    current: T;
+  original: T;
+  current: T;
 
-    setOriginal(item: T) {
-        this.original = item;
-        this.current = this.clone(item);
-    }
+  setOriginal(item: T) {
+    this.original = item;
+    this.current = this.clone(item);
+  }
 
-    getCurrent(): T {
-        return this.current;
-    }
+  getCurrent(): T {
+    return this.current;
+  }
 
-    setCurrent(value: T) {
-        this.current = value;
-    }
+  setCurrent(value: T) {
+    this.current = value;
+  }
 
-    getOriginal(): T {
-        return this.original;
-    }
+  getOriginal(): T {
+    return this.original;
+  }
 
-    restoreOriginal(): T {
-        this.current = this.clone(this.original);
-        return this.getCurrent();
-    }
+  restoreOriginal(): T {
+    this.current = this.clone(this.original);
+    return this.getCurrent();
+  }
 
-    clone(item: T): T {
-        // Super poor clone implementation
-        if (!item) {
-            return null;
-        }
-        return JSON.parse(JSON.stringify(item));
+  clone(item: T): T {
+    // Super poor clone implementation
+    if (!item) {
+      return null;
     }
+    return JSON.parse(JSON.stringify(item));
+  }
 }

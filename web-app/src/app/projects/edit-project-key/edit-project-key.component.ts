@@ -1,59 +1,58 @@
-import { Component, Input } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-
-import { Project } from './../model/project';
-import { RestoreItemService } from './../../shared/restore-item.service';
+import {Component, Input} from '@angular/core';
+import {RestoreItemService} from './../../shared/restore-item.service';
 
 @Component({
-    providers: [RestoreItemService],
-    selector: 'edit-project-key',
-    templateUrl: './edit-project-key.component.html'
+  providers: [RestoreItemService],
+  selector: 'edit-project-key',
+  templateUrl: './edit-project-key.component.html'
 })
 export class EditProjectKeyComponent {
-    @Input()
-    private submit;
-    @Input()
-    private pending: boolean;
-    @Input()
-    set key(value: string) {
-        if (!value) {
-            return;
-        }
-        this.restoreService.setOriginal(value);
-    }
+  @Input()
+  private submit;
+  @Input()
+  private pending: boolean;
 
-    set _key(value: string) {
-        this.restoreService.setCurrent(value);
+  @Input()
+  set key(value: string) {
+    if (!value) {
+      return;
     }
-    get _key(): string {
-        return this.restoreService.getCurrent();
-    }
+    this.restoreService.setOriginal(value);
+  }
 
-    public modalOpen: boolean;
+  set _key(value: string) {
+    this.restoreService.setCurrent(value);
+  }
 
-    public loading: boolean;
+  get _key(): string {
+    return this.restoreService.getCurrent();
+  }
 
-    constructor(
-        private restoreService: RestoreItemService<string>,
-    ) {
-        this.commitChanges = this.commitChanges.bind(this);
-        this.loading = false;
-    }
+  public modalOpen: boolean;
 
-    commitChanges() {
-        this.loading = true;
-        this.submit(this.restoreService.getOriginal(), this.restoreService.getCurrent())
-        this.closeModal();
-        // TODO handle failed case
-    }
+  public loading: boolean;
 
-    openModal() {
-        this.modalOpen = true;
-    }
+  constructor(
+    private restoreService: RestoreItemService<string>,
+  ) {
+    this.commitChanges = this.commitChanges.bind(this);
+    this.loading = false;
+  }
 
-    closeModal() {
-        this.modalOpen = false;
-        this.loading = false;
-        this.restoreService.restoreOriginal();
-    }
+  commitChanges() {
+    this.loading = true;
+    this.submit(this.restoreService.getOriginal(), this.restoreService.getCurrent())
+    this.closeModal();
+    // TODO handle failed case
+  }
+
+  openModal() {
+    this.modalOpen = true;
+  }
+
+  closeModal() {
+    this.modalOpen = false;
+    this.loading = false;
+    this.restoreService.restoreOriginal();
+  }
 }

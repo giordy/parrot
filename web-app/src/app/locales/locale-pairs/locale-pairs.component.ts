@@ -1,66 +1,69 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, Input} from '@angular/core';
 
-import { Locale, Pair } from './../model/locale';
-import { LocalesService } from './../services/locales.service';
+import {Locale, Pair} from '../model';
+import {LocalesService} from '..';
 
 @Component({
-    selector: 'locale-pairs',
-    templateUrl: './locale-pairs.component.html',
-    styleUrls: ['locale-pairs.component.css']
+  selector: 'locale-pairs',
+  templateUrl: './locale-pairs.component.html',
+  styleUrls: ['locale-pairs.component.css']
 })
 export class LocalePairsComponent {
-    @Input()
-    set locale(value: Locale) {
-        this._locale = value;
-        this.pairs = this.transformPairs(value);
-    }
 
-    get locale(): Locale {
-        return this._locale;
-    }
+  @Input()
+  set locale(value: Locale) {
+    this._locale = value;
+    this.pairs = this.transformPairs(value);
+  }
 
-    private _locale: Locale;
+  get locale(): Locale {
+    return this._locale;
+  }
 
-    @Input()
-    private loading: boolean = false;
-    @Input()
-    private editable: boolean = false;
+  private _locale: Locale;
 
-    public pairs: Pair[];
-    private updatePending: boolean = false;
+  @Input()
+  loading = false;
+  @Input()
+  editable = false;
 
-    constructor(private localesService: LocalesService) {
-        this.commitPair = this.commitPair.bind(this);
-    }
+  public pairs: Pair[];
+  private updatePending = false;
 
-    ngOnInit() { }
+  constructor(private localesService: LocalesService) {
+    this.commitPair = this.commitPair.bind(this);
+  }
 
-    commitPair(pair: Pair) {
-        this.updatePending = true;
-        // TODO: make this nice.
-        this.locale.pairs[pair.key] = pair.value;
-        this.localesService.updateLocalePairs(this.locale.project_id, this.locale.ident, this.locale.pairs)
-            .subscribe(
-            locale => { this.locale = locale; },
-            err => console.log(err),
-            () => { this.updatePending = false }
-            );
-    }
-
-    transformPairs(locale: Locale): Array<Pair> {
-        if (!locale) {
-            return [];
+  commitPair(pair: Pair) {
+    this.updatePending = true;
+    // TODO: make this nice.
+    this.locale.pairs[pair.key] = pair.value;
+    this.localesService.updateLocalePairs(this.locale.project_id, this.locale.ident, this.locale.pairs)
+      .subscribe(
+        locale => {
+          this.locale = locale;
+        },
+        err => console.log(err),
+        () => {
+          this.updatePending = false;
         }
-        let pairs = locale.pairs;
-        let result: Array<Pair> = [];
-        let keys = Object.keys(pairs);
-        for (let i = 0; i < keys.length; i++) {
-            let pair = {
-                key: keys[i],
-                value: pairs[keys[i]]
-            };
-            result.push(pair);
-        }
-        return result;
+      );
+  }
+
+  transformPairs(locale: Locale): Array<Pair> {
+    if (!locale) {
+      return [];
     }
+    const pairs = locale.pairs;
+    const result: Array<Pair> = [];
+    const keys = Object.keys(pairs);
+    for (let i = 0; i < keys.length; i++) {
+      const pair = {
+        key: keys[i],
+        value: pairs[keys[i]]
+      };
+      result.push(pair);
+    }
+    return result;
+  }
 }

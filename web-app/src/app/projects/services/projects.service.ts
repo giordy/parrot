@@ -1,12 +1,10 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/share';
-
-import { UserService } from './../../users/services/user.service';
-import { APIService } from './../../shared/api.service';
-import { Project } from './../model/project';
+import {APIService} from '../../shared/api.service';
+import {Project} from '../model/project';
 
 @Injectable()
 export class ProjectsService {
@@ -17,37 +15,40 @@ export class ProjectsService {
   private _activeProject = new BehaviorSubject<Project>(null);
   public activeProject = this._activeProject.asObservable();
 
-  constructor(private api: APIService) { }
+  constructor(private api: APIService) {
+  }
 
   fetchProjects(): Observable<Project[]> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: '/projects',
       method: 'GET',
     })
       .map(res => {
-        let projects = res.payload;
+        const projects = res.payload;
         if (!projects) {
-          throw new Error("no projects in response");
+          throw new Error('no projects in response');
         }
         return projects;
       }).share();
 
     request.subscribe(
-      projects => { this._projects.next(projects); }
+      projects => {
+        this._projects.next(projects);
+      }
     );
 
     return request;
   }
 
   fetchProject(id: string): Observable<Project> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: `/projects/${id}`,
       method: 'GET',
     })
       .map(res => {
-        let project = res.payload;
+        const project = res.payload;
         if (!project) {
-          throw new Error("no project in response");
+          throw new Error('no project in response');
         }
         return project;
       }).share();
@@ -58,22 +59,22 @@ export class ProjectsService {
   }
 
   createProject(project): Observable<Project> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: '/projects',
       method: 'POST',
       body: JSON.stringify(project),
     })
       .map(res => {
-        let project = res.payload;
-        if (!project) {
-          throw new Error("no project in response");
+        const proj = res.payload;
+        if (!proj) {
+          throw new Error('no project in response');
         }
-        return project;
+        return proj;
       }).share();
 
     request.subscribe(
-      project => {
-        let projects = this._projects.getValue().concat(project);
+      pj => {
+        const projects = this._projects.getValue().concat(pj);
         this._projects.next(projects);
       });
 
@@ -81,22 +82,22 @@ export class ProjectsService {
   }
 
   addProjectKey(projectId: string, key: string): Observable<Project> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: `/projects/${projectId}/keys`,
       method: 'POST',
-      body: JSON.stringify({ key: key }),
+      body: JSON.stringify({key: key}),
     })
       .map(res => {
-        let payload = res.payload;
+        const payload = res.payload;
         if (!payload) {
-          throw new Error("no payload in response");
+          throw new Error('no payload in response');
         }
         return payload;
       }).share();
 
     request.subscribe(
       project => {
-        let projects = this._projects.getValue().map(current => (current.id === project.id) ? project : current);
+        const projects = this._projects.getValue().map(current => (current.id === project.id) ? project : current);
         this._projects.next(projects);
         this._activeProject.next(project);
       });
@@ -105,7 +106,7 @@ export class ProjectsService {
   }
 
   deleteProject(projectId: string): Observable<any> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: `/projects/${projectId}`,
       method: 'DELETE'
     })
@@ -113,7 +114,7 @@ export class ProjectsService {
 
     request.subscribe(
       () => {
-        let projects = this._projects.getValue().filter(_project => _project.id !== projectId);
+        const projects = this._projects.getValue().filter(_project => _project.id !== projectId);
         this._projects.next(projects);
         this._activeProject.next(null);
       });
@@ -122,21 +123,21 @@ export class ProjectsService {
   }
 
   deleteProjectKey(projectId: string, key: string): Observable<Project> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: `/projects/${projectId}/keys/${key}`,
       method: 'DELETE'
     })
       .map(res => {
-        let payload = res.payload;
+        const payload = res.payload;
         if (!payload) {
-          throw new Error("no payload in response");
+          throw new Error('no payload in response');
         }
         return payload;
       }).share();
 
     request.subscribe(
       project => {
-        let projects = this._projects.getValue().map(_project => (_project.id === project.id) ? project : _project);
+        const projects = this._projects.getValue().map(_project => (_project.id === project.id) ? project : _project);
         this._projects.next(projects);
         this._activeProject.next(project);
       });
@@ -145,22 +146,22 @@ export class ProjectsService {
   }
 
   updateProjectKey(projectId: string, oldKey: string, newKey: string): Observable<Project> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: `/projects/${projectId}/keys`,
       method: 'PATCH',
-      body: JSON.stringify({ oldKey: oldKey, newKey: newKey }),
+      body: JSON.stringify({oldKey: oldKey, newKey: newKey}),
     })
       .map(res => {
-        let payload = res.payload.project;
+        const payload = res.payload.project;
         if (!payload) {
-          throw new Error("no payload in response");
+          throw new Error('no payload in response');
         }
         return payload;
       }).share();
 
     request.subscribe(
       project => {
-        let projects = this._projects.getValue().map(_project => (_project.id === project.id) ? project : _project);
+        const projects = this._projects.getValue().map(_project => (_project.id === project.id) ? project : _project);
         this._projects.next(projects);
         this._activeProject.next(project);
       });
@@ -169,22 +170,22 @@ export class ProjectsService {
   }
 
   updateProjectName(projectId: string, newName: string): Observable<Project> {
-    let request = this.api.request({
+    const request = this.api.request({
       uri: `/projects/${projectId}/name`,
       method: 'PATCH',
-      body: JSON.stringify({ projectId: projectId, name: newName }),
+      body: JSON.stringify({projectId: projectId, name: newName}),
     })
       .map(res => {
-        let payload = res.payload;
+        const payload = res.payload;
         if (!payload) {
-          throw new Error("no payload in response");
+          throw new Error('no payload in response');
         }
         return payload;
       }).share();
 
     request.subscribe(
       project => {
-        let projects = this._projects.getValue().map(_project => (_project.id === project.id) ? project : _project);
+        const projects = this._projects.getValue().map(_project => (_project.id === project.id) ? project : _project);
         this._projects.next(projects);
         this._activeProject.next(project);
       });

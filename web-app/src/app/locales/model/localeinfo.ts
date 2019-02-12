@@ -1,5 +1,5 @@
 export interface LocaleInfo {
-    ident: string;
-    country: string;
-    language: string;
+  ident: string;
+  country: string;
+  language: string;
 }

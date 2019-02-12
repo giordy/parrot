@@ -1,8 +1,8 @@
 .textarea {
-    margin-bottom: 5px;
-    background: #F5F5F5;
+  margin-bottom: 5px;
+  background: #F5F5F5;
 }
 
 .textarea:focus {
-    background: #FFF;
+  background: #FFF;
 }

@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 
-import { TranslateService } from '@ngx-translate/core';
+import {TranslateService} from '@ngx-translate/core';
 
-import { AuthService } from './../services/auth.service';
-import { User } from './../../users/model/user';
-import { ErrorsService } from './../../shared/errors.service';
+import {AuthService} from './../services/auth.service';
+import {ErrorsService} from './../../shared/errors.service';
 
 @Component({
   selector: 'login',
@@ -16,10 +15,12 @@ export class LoginComponent implements OnInit {
   public errors: string[];
   public language: string;
   public languages = [
-    { value: 'en-US', name: 'English' },
-    { value: 'zh-CN', name: '中文' }
+    {value: 'en-US', name: 'English'},
+    {value: 'zh-CN', name: '中文'}
   ];
-  constructor(private auth: AuthService, private router: Router, private errorsService: ErrorsService, private translate: TranslateService) { }
+
+  constructor(private auth: AuthService, private router: Router, private errorsService: ErrorsService, private translate: TranslateService) {
+  }
 
   ngOnInit() {
     let browLang = this.translate.getBrowserCultureLang();
@@ -27,7 +28,7 @@ export class LoginComponent implements OnInit {
       this.language = browLang;
       this.translate.use(this.language);
     } else {
-      this.language = "en-US";
+      this.language = 'en-US';
       this.translate.use(this.language);
     }
   }
@@ -37,7 +38,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(email: string, password: string) {
-    let user = { email: email, password: password };
+    let user = {email: email, password: password};
     this.auth.login(user).subscribe(
       result => {
         this.router.navigate(['/projects']);

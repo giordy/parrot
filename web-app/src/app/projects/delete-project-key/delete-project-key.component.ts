@@ -1,48 +1,50 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-    selector: 'delete-project-key',
-    templateUrl: 'delete-project-key.component.html'
+  selector: 'delete-project-key',
+  templateUrl: 'delete-project-key.component.html'
 })
 export class DeleteProjectKeyComponent implements OnInit {
-    @Input()
-    public pending: boolean = false;
-    @Input()
-    public key: string;
-    @Input()
-    private submit;
+  @Input()
+  public pending: boolean = false;
+  @Input()
+  public key: string;
+  @Input()
+  private submit;
 
-    public repeatKey: string;
-    public modalOpen: boolean;
+  public repeatKey: string;
+  public modalOpen: boolean;
 
-    constructor() { }
+  constructor() {
+  }
 
-    ngOnInit() { }
+  ngOnInit() {
+  }
 
-    confirm() {
-        this.submit(this.repeatKey);
+  confirm() {
+    this.submit(this.repeatKey);
+  }
+
+  openModal() {
+    this.modalOpen = true;
+  }
+
+  closeModal() {
+    this.modalOpen = false;
+    this.reset();
+  }
+
+  valid(): boolean {
+    if (!this.repeatKey) {
+      return false;
     }
-
-    openModal() {
-        this.modalOpen = true;
+    if (this.repeatKey.length <= 0) {
+      return false;
     }
+    return this.repeatKey === this.key;
+  }
 
-    closeModal() {
-        this.modalOpen = false;
-        this.reset();
-    }
-
-    valid(): boolean {
-        if (!this.repeatKey) {
-            return false;
-        }
-        if (this.repeatKey.length <= 0) {
-            return false;
-        }
-        return this.repeatKey === this.key;
-    }
-
-    reset() {
-        this.repeatKey = '';
-    }
+  reset() {
+    this.repeatKey = '';
+  }
 }

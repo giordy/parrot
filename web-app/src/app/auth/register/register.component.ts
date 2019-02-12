@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 
-import { AuthService } from './../services/auth.service';
-import { ErrorsService } from './../../shared/errors.service';
-import { User } from './../../users/model/user';
+import {AuthService} from './../services/auth.service';
+import {ErrorsService} from './../../shared/errors.service';
 
 @Component({
   selector: 'register',
@@ -21,14 +20,15 @@ export class RegisterComponent implements OnInit {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
 
   navigateToLogin() {
     this.router.navigate(['/login']);
   }
 
   onSubmit(name: string, email: string, password: string) {
-    let user = { name: name, email: email, password: password };
+    let user = {name: name, email: email, password: password};
     this.auth.register(user).subscribe(
       () => {
         this.auth.login(user).subscribe(

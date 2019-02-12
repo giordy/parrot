@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"time"
 
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/schema"
 	"github.com/parrot-translate/parrot/parrot-api/datastore"
 	apiErrors "github.com/parrot-translate/parrot/parrot-api/errors"
 	"github.com/parrot-translate/parrot/parrot-api/render"
-	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/gorilla/schema"
 	"golang.org/x/crypto/bcrypt"
 )
 
