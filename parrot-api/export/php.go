@@ -36,7 +36,7 @@ func (e *PHP) Export(locale *model.Locale) ([]byte, error) {
 		}
 	}
 
-	_, err = buf.WriteString(");>")
+	_, err = buf.WriteString(");?>")
 	if err != nil {
 		return nil, err
 	}
